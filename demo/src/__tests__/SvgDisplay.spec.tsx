@@ -43,7 +43,7 @@ describe("SvgDisplay", () => {
                 },
             ],
         ],
-    ])("when jsonResult is not null and %s", (scenario, jsonResult) => {
+    ])("when jsonResult is not null and %s", (_, jsonResult) => {
         beforeEach(() => {
             render(
                 <SvgDisplay
