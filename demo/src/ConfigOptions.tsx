@@ -17,6 +17,9 @@ import {
     TableRow,
     TableCell,
     IconButton,
+    FormControlLabel,
+    Checkbox,
+    FormGroup,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -25,8 +28,14 @@ const ConfigOptions = (props) => {
     // form based cards to enter style based on id
     // selecting id will automatically give out available styles using presets
     // so should pass in jsonResult
+    //TODO: use state from App
     const [cards, setCards] = useState([
-        { id: "", name: "", styles: [{ style: "", value: "" }] },
+        {
+            id: "",
+            name: "",
+            forOverall: false,
+            styles: [{ style: "", value: "" }],
+        },
     ]);
     const [ids, setIds] = useState([]);
     const [names, setNames] = useState([]);
@@ -40,6 +49,8 @@ const ConfigOptions = (props) => {
                     setNames((prev) => [...prev, json.name]);
                 }
             });
+            setIds((prev) => [...prev, "empty"]);
+            setNames((prev) => [...prev, "empty"]);
         }
     }, [props.jsonResult]);
 
@@ -50,6 +61,10 @@ const ConfigOptions = (props) => {
             updatedCards[cardIndex].styles[rowIndex].style = value;
         } else if (type === "value") {
             updatedCards[cardIndex].styles[rowIndex].value = value;
+        } else if (type === "name") {
+            updatedCards[cardIndex].name = value;
+        } else if (type === "id") {
+            updatedCards[cardIndex].id = value;
         }
         setCards(updatedCards);
     };
@@ -69,7 +84,12 @@ const ConfigOptions = (props) => {
     const handleAddCard = () => {
         setCards([
             ...cards,
-            { id: "", name: "", styles: [{ style: "", value: "" }] },
+            {
+                id: "",
+                name: "",
+                forOverall: false,
+                styles: [{ style: "", value: "" }],
+            },
         ]);
     };
 
@@ -81,40 +101,61 @@ const ConfigOptions = (props) => {
         }
     };
 
-    //TODO: define configs state in parent and pass down
-    // and onSubmit, merge configs into jsonResult before passing to draw
-    const combineStyles = () => {};
-
     return (
         <Box sx={{ display: "flex", flexDirection: "column" }}>
-            <Grid container spacing={2} justifyContent="left">
+            <Grid container justifyContent="left">
                 {cards.map((card, cardIndex) => (
-                    <Grid item key={cardIndex} xs={12} sm={6} md={6} lg={4}>
+                    <Grid item key={cardIndex} xs={12} sm={6} md={4} lg={3}>
                         <Card sx={{ mb: 2 }}>
                             <CardContent>
-                                <Typography variant="h6" gutterBottom>
-                                    Custom Style
-                                </Typography>
-                                <FormControl fullWidth sx={{ mt: 2 }}>
-                                    <InputLabel>ID</InputLabel>
+                                <h5>Custom Style</h5>
+                                <FormGroup>
+                                    <FormControlLabel
+                                        control={<Checkbox />}
+                                        label="For Overall Style?"
+                                        value={card.forOverall}
+                                        onChange={() => {
+                                            const updatedCards = [...cards];
+                                            updatedCards[cardIndex].forOverall =
+                                                !updatedCards[cardIndex]
+                                                    .forOverall;
+                                            setCards(updatedCards);
+                                        }}
+                                    />
+                                </FormGroup>
+                                <FormControl fullWidth>
+                                    <InputLabel id="id-select-label">
+                                        ID
+                                    </InputLabel>
                                     <Select
-                                        name="id"
+                                        labelId="id-select-label"
+                                        label="ID"
                                         value={card.id}
                                         onChange={(e) =>
                                             handleChange(cardIndex, 0, "id", e)
                                         }
+                                        disabled={card.forOverall}
                                     >
                                         {ids.map((id) => (
-                                            <MenuItem key={id} value={id}>
+                                            <MenuItem
+                                                key={id}
+                                                value={id === "empty" ? "" : id}
+                                            >
                                                 {id}
                                             </MenuItem>
                                         ))}
                                     </Select>
                                 </FormControl>
-                                <FormControl fullWidth sx={{ mt: 2 }}>
-                                    <InputLabel>Name</InputLabel>
+                                <FormControl
+                                    fullWidth
+                                    disabled={card.forOverall}
+                                >
+                                    <InputLabel id="name-select-label">
+                                        Name
+                                    </InputLabel>
                                     <Select
-                                        name="name"
+                                        label="Name"
+                                        labelId="name-select-label"
                                         value={card.name}
                                         onChange={(e) =>
                                             handleChange(
@@ -126,7 +167,12 @@ const ConfigOptions = (props) => {
                                         }
                                     >
                                         {names.map((name) => (
-                                            <MenuItem key={name} value={name}>
+                                            <MenuItem
+                                                key={name}
+                                                value={
+                                                    name === "empty" ? "" : name
+                                                }
+                                            >
                                                 {name}
                                             </MenuItem>
                                         ))}

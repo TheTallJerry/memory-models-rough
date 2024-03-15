@@ -1,1 +1,4 @@
 /* Custom CSS goes here */
+input {
+    box-shadow: none;
+}

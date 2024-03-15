@@ -25,8 +25,14 @@ type MemoryModelsTextInputPropTypes = {
     textData: string;
 };
 
+type ConfigOptionsPropTypes = {
+    configOptions: Array<object>;
+    setConfigOptions: React.Dispatch<React.SetStateAction<Array<object>>>;
+};
+
 type MemoryModelsUserInputPropTypes = MemoryModelsFileInputPropTypes &
-    MemoryModelsTextInputPropTypes & {
+    MemoryModelsTextInputPropTypes &
+    ConfigOptionsPropTypes & {
         onTextDataSubmit: (event: React.MouseEvent<HTMLFormElement>) => void;
     };
 
@@ -122,7 +128,7 @@ export default function MemoryModelsUserInput(
     return (
         <form data-testid="input-form" onSubmit={props.onTextDataSubmit}>
             <Grid container spacing={2}>
-                <Grid item xs={12} paddingBottom={5}>
+                <Grid item xs={12}>
                     <Card>
                         <Typography component="div">
                             <MemoryModelsFileInput
@@ -138,7 +144,11 @@ export default function MemoryModelsUserInput(
                         </Typography>
                     </Card>
                     <Grid item xs={12} paddingTop={5}>
-                        <ConfigOptions jsonResult={props.jsonResult} />
+                        <ConfigOptions
+                            jsonResult={props.jsonResult}
+                            configOptions={props.configOptions}
+                            setConfigOptions={props.setConfigOptions}
+                        />
                     </Grid>
                     <Tooltip title="Input JSON to draw diagram">
                         <span>

@@ -10,11 +10,46 @@ export default function App() {
     const [jsonResult, setJsonResult] = useState(null);
     const [svgResult, setSvgResult] = useState(null);
     const [failureBanner, setFailureBanner] = useState("");
+    const [configOptions, setConfigOptions] = useState([
+        {
+            id: "",
+            name: "",
+            forOverall: false,
+            styles: [{ style: "", value: "" }],
+        },
+    ]);
 
+    const mergeConfigOptions = () => {
+        jsonResult.forEach((json) => {
+            if (!json.name && !json.id) {
+                setJsonResult(
+                    jsonResult +
+                        configOptions.filter(
+                            (configOption) => configOption.forOverall
+                        )
+                );
+            } else if (json.name) {
+                setJsonResult(
+                    jsonResult +
+                        configOptions.filter(
+                            (configOption) => configOption.name == json.name
+                        )
+                );
+            } else if (json.id) {
+                setJsonResult(
+                    jsonResult +
+                        configOptions.filter(
+                            (configOption) => configOption.id === json.id
+                        )
+                );
+            }
+        });
+    };
     const onSubmit = (event, data) => {
         event.preventDefault();
         try {
             setJsonResult(JSON.parse(data));
+            mergeConfigOptions();
             setFailureBanner("");
         } catch (error) {
             const errorMessage = `Error parsing inputted JSON: ${error.message}`;
@@ -40,6 +75,8 @@ export default function App() {
                 onTextDataSubmit={onTextDataSubmit}
                 setFailureBanner={setFailureBanner}
                 jsonResult={jsonResult}
+                configOptions={configOptions}
+                setConfigOptions={setConfigOptions}
             />
             <section>
                 <h2>Output</h2>
