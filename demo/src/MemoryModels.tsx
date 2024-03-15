@@ -11,6 +11,7 @@ import {
     Stack,
 } from "@mui/material";
 import DownloadJSONButton from "./DownloadJSONButton";
+import ConfigForm from "./ConfigForm";
 
 type MemoryModelsFileInputPropTypes = {
     setTextData: React.Dispatch<React.SetStateAction<string>>;
@@ -120,7 +121,7 @@ export default function MemoryModelsUserInput(
 ) {
     return (
         <form data-testid="input-form" onSubmit={props.onTextDataSubmit}>
-            <Grid container spacing={2}>
+            <Grid container spacing={2} paddingBottom={5}>
                 <Grid item xs={12}>
                     <Card>
                         <Typography component="div">
@@ -152,6 +153,7 @@ export default function MemoryModelsUserInput(
                     </Tooltip>
                 </Grid>
             </Grid>
+            <ConfigForm jsonResult={props.jsonResult} />
         </form>
     );
 }
