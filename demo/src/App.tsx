@@ -49,7 +49,7 @@ export default function App() {
         event.preventDefault();
         try {
             setJsonResult(JSON.parse(data));
-            mergeConfigOptions();
+            // mergeConfigOptions();
             setFailureBanner("");
         } catch (error) {
             const errorMessage = `Error parsing inputted JSON: ${error.message}`;
